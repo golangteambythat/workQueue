@@ -3,7 +3,7 @@
  * Author : 郑东哲
  * Email : i_zhengdongzhe@cvte.com
  * -----
- * Last Modified: 2019-09-28 Saturday 09:06:52
+ * Last Modified: 2019-09-30 Monday 08:53:28
  * Modified By: 郑东哲
  * Email : i_zhengdongzhe@cvte.com
  * -----
@@ -13,7 +13,7 @@
 package workqueue
 
 import (
-	"workqueue/common"
+	"collector/pkg/common"
 
 	"sync"
 	"time"
@@ -21,9 +21,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Ch workq任务入口 传入&workq.Item{}
-var Ch chan interface{}
-var once sync.Once
+var (
+	// Ch workq任务入口 传入&workq.Item{}
+	Ch           chan interface{}
+	workBuffSize = 64
+	once         sync.Once
+)
 
 // workq 任务类型
 const (
@@ -270,7 +273,7 @@ func (r *workQ) randDo() {
 var workq workQ
 
 func init() {
-	Ch = make(chan interface{}, 10)
+	Ch = make(chan interface{}, workBuffSize)
 	workq = workQ{}
 	workq.init()
 	workq.Duration = time.Second // 默认间隔
